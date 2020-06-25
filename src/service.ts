@@ -6,6 +6,6 @@ const app: express.Application = express();
 
 app.use(cors({ origin: '*' }));
 
-app.get('/', (req, res) => res.send('hello world'));
+// app.use('/', graphqlHTTP({ schema graphiql: true }));
 
 export default app;

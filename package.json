@@ -7,10 +7,12 @@
   "author": "Evan Silverman <es4753@nyu.edu>",
   "license": "MIT",
   "scripts": {
+    "postinstall": "yarn build",
     "start": "babel-node lib/server",
+    "start:watch": "nodemon",
     "type-check": "tsc --noEmit",
     "type-check:watch": "yarn type-check -- --watch",
-    "build": "yarn build:types && yarn build:js",
+    "build": "rimraf lib && yarn build:types && yarn build:js",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix --ignore-pattern 'lib/*'"
@@ -21,7 +23,8 @@
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphiql": "^1.0.3",
-    "graphql": "^15.1.0"
+    "graphql": "^15.1.0",
+    "graphql-relay": "^0.6.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.3",
@@ -40,7 +43,21 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "mocha": "^8.0.1",
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
     "typescript": "^3.9.5"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "lib",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "yarn build && yarn start",
+    "ext": "ts"
   }
 }
