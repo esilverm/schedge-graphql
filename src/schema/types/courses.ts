@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * This endpoint returns a list of courses for a specific year, semester, school, and subject.
  * @endpoint: /{year}/{semester}/{school}/{subject}
@@ -8,42 +7,47 @@
  *          subject: string
  */
 
-// @TODO: Add type definition for course. Currently disabling eslint rule for file
 import { GraphQLObjectType, GraphQLString, GraphQLList } from 'graphql';
 
-import SectionType from './section';
-import SubjectType from './subjects';
+import { Subject, SubjectType } from './subjects';
+import { Section, SectionType } from './section';
 
-const CoursesType: GraphQLObjectType = new GraphQLObjectType({
+export interface Course {
+  name: string;
+  deptCourseId: string;
+  description: string;
+  sections: Array<Section>;
+  subjectCode: Subject;
+}
+
+export const CoursesType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Courses',
   description: 'A course at New York University',
   fields: () => ({
     name: {
       type: GraphQLString,
-      resolve: (course: any): string => course.name,
+      resolve: (course: Course): string => course.name,
       description: 'The name of the school',
     },
     deptCourseId: {
       type: GraphQLString,
-      resolve: (course: any): string => course.deptCourseId,
+      resolve: (course: Course): string => course.deptCourseId,
       description: 'ID of course within its department',
     },
     description: {
       type: GraphQLString,
-      resolve: (course: any): string => course.description,
+      resolve: (course: Course): string => course.description,
       description: 'Description of the course',
     },
     sections: {
       type: new GraphQLList(SectionType),
-      resolve: (course: any): Array<any> => course.sections,
+      resolve: (course: Course): Array<Section> => course.sections,
       description: 'A list of sections tied to the current course',
     },
     subjectCode: {
       type: SubjectType,
-      resolve: (course: any): any => course.subjectCode,
+      resolve: (course: Course): Subject => course.subjectCode,
       description: 'The subject and school of the given course',
     },
   }),
 });
-
-export default CoursesType;

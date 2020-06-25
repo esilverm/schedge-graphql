@@ -5,7 +5,12 @@
 
 import { GraphQLObjectType, GraphQLString } from 'graphql';
 
-const SchoolsType: GraphQLObjectType = new GraphQLObjectType({
+export interface Schools {
+  name: string;
+  code: string;
+}
+
+export const SchoolsType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Schools',
   description: 'A school at New York University',
   fields: () => ({
@@ -19,5 +24,3 @@ const SchoolsType: GraphQLObjectType = new GraphQLObjectType({
     },
   }),
 });
-
-export default SchoolsType;

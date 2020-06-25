@@ -10,10 +10,29 @@
 // @TODO: Add type definition for section. Currently disabling eslint rule for file
 import { GraphQLInt, GraphQLObjectType, GraphQLString, GraphQLList } from 'graphql';
 
-import RecitationType from './recitation';
-import MeetingType from './meetings';
+import { Recitation, RecitationType } from './recitation';
+import { Meeting, MeetingsType } from './meetings';
 
-const SectionType = new GraphQLObjectType({
+export interface Section {
+  name: string;
+  registrationNumber: number;
+  code: string;
+  campus: string;
+  grading: string;
+  instructionMode: string;
+  instructors: Array<string>;
+  location: string;
+  maxUnits: number;
+  minUnits: number;
+  prerequisites: string;
+  status: string;
+  type: string;
+  notes: string | null;
+  recitations: Array<Recitation> | null;
+  meetings: Array<Meeting>;
+}
+
+export const SectionType = new GraphQLObjectType({
   name: 'Section',
   description: 'A section in a specific course',
   fields: () => ({
@@ -23,80 +42,78 @@ const SectionType = new GraphQLObjectType({
     },
     registrationNumber: {
       type: GraphQLInt,
-      resolve: (section: any): number => section.registrationNumber,
+      resolve: (section: Section): number => section.registrationNumber,
       description: "The section's registration number",
     },
     code: {
       type: GraphQLString,
-      resolve: (section: any): string => section.code,
+      resolve: (section: Section): string => section.code,
       description: 'Section code',
     },
     campus: {
       type: GraphQLString,
-      resolve: (section: any): string => section.campus,
+      resolve: (section: Section): string => section.campus,
       description: 'Campus the course section is taught at',
     },
     grading: {
       type: GraphQLString,
-      resolve: (section: any): string => section.grading,
+      resolve: (section: Section): string => section.grading,
       description: 'Grading style of the course section',
     },
     instructionMode: {
       type: GraphQLString,
-      resolve: (section: any): string => section.instructionMode,
+      resolve: (section: Section): string => section.instructionMode,
       description: 'How the course section will be taught',
     },
     instructors: {
       type: new GraphQLList(GraphQLString),
-      resolve: (section: any): Array<string> => section.instructors,
+      resolve: (section: Section): Array<string> => section.instructors,
       description: 'List of course section instructors',
     },
     location: {
       type: GraphQLString,
-      resolve: (section: any): string => section.location,
+      resolve: (section: Section): string => section.location,
       description: 'Specific course location on campus',
     },
     maxUnits: {
       type: GraphQLInt,
-      resolve: (section: any): number => section.maxUnits,
+      resolve: (section: Section): number => section.maxUnits,
       description: 'Maximum Units section can be taken for',
     },
     minUnits: {
       type: GraphQLInt,
-      resolve: (section: any): number => section.minUnits,
+      resolve: (section: Section): number => section.minUnits,
       description: 'Minimum Units section can be taken for',
     },
     prerequisites: {
       type: GraphQLString,
-      resolve: (section: any): string => section.prerequisites,
+      resolve: (section: Section): string => section.prerequisites,
       description: 'Prerequisites to take the section',
     },
     status: {
       type: GraphQLString,
-      resolve: (section: any): string => section.status,
+      resolve: (section: Section): string => section.status,
       description: 'Current status of the section',
     },
     type: {
       type: GraphQLString,
-      resolve: (section: any): string => section.type,
+      resolve: (section: Section): string => section.type,
       description: 'Type of section',
     },
     notes: {
       type: GraphQLString,
-      resolve: (section: any): string | null => (section.notes ? section.notes : null),
+      resolve: (section: Section): string | null => (section.notes ? section.notes : null),
       description: 'Section notes',
     },
     recitations: {
       type: new GraphQLList(RecitationType),
-      resolve: (section: any): any | null => (section.recitations ? section.recitations : null),
+      resolve: (section: Section): Array<Recitation> | null => (section.recitations ? section.recitations : null),
       description: 'List of recitations',
     },
     meetings: {
-      type: new GraphQLList(MeetingType),
-      resolve: (section: any): Array<any> => section.meetings,
+      type: new GraphQLList(MeetingsType),
+      resolve: (section: Section): Array<Meeting> => section.meetings,
       description: 'List of meetings for a section',
     },
   }),
 });
-
-export default SectionType;

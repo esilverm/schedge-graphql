@@ -4,9 +4,15 @@
  */
 import { GraphQLObjectType, GraphQLString } from 'graphql';
 
-import SchoolType from './schools';
+import { Schools, SchoolsType } from './schools';
 
-const SubjectType: GraphQLObjectType = new GraphQLObjectType({
+export interface Subject {
+  name: string;
+  code: string;
+  school: Schools;
+}
+
+export const SubjectType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Subject',
   description: 'A subject at New York University',
   fields: () => ({
@@ -19,10 +25,8 @@ const SubjectType: GraphQLObjectType = new GraphQLObjectType({
       description: "The subject's abbreviation",
     },
     school: {
-      type: SchoolType,
+      type: SchoolsType,
       description: 'The school that provides the given subject',
     },
   }),
 });
-
-export default SubjectType;
