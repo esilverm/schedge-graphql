@@ -1,0 +1,55 @@
+enum SemesterCode {
+  SU
+  SP
+  FA
+  JA
+}
+
+enum CourseStatus {
+  OPEN
+  CLOSED
+  WAITLIST
+}
+
+type Subject {
+  code: ID!
+  name: String!
+  school: School
+  courses: [Course!]
+}
+
+type School {
+  code: ID!
+  name: String!
+  subjects: [Subject!]
+}
+
+type Course {
+  deptCourseId: ID!
+  name: String!
+  description: String
+  subject: Subject!
+}
+
+type Section {
+  code: ID!
+  registrationNumber: Int!
+  status: CourseStatus!
+  type: String
+  meetings: [Meeting!]!
+}
+
+type Professor {
+  name: String!
+}
+
+type Meeting {
+  beginDate: String!
+  minutesDuration: Int!
+  endDate: String!
+}
+
+type Query {
+  totalSubjects: Int!
+  allSubjects: [Subject!]!
+}
