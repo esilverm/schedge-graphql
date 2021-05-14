@@ -89,6 +89,8 @@ const resolvers = {
           })),
           ...section,
         })),
+        // We define subject within here because it is easier than
+        // passing data down and changing the structure of our schema
         subject: {
           code: subjectCode.code,
           name: subjects[schoolCode][subjectCode.code].name,

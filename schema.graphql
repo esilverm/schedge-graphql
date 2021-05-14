@@ -35,8 +35,8 @@ type Course {
 }
 
 type Section {
-  code: ID!
-  registrationNumber: Int!
+  registrationNumber: ID!
+  code: String!
   name: String
   status: CourseStatus!
   type: String!
