@@ -25,13 +25,39 @@ const resolvers = {
             code: code,
             school: {
               code: school,
-              name: schools[school]?.name ?? ""
+              name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
             }
           }]
         }, [])]
       }, []);
+    },
+    totalSchools: async (_, __, { dataSources }) => {
+      // Use subjects key since some schools dont exist in the school query
+      return Object.keys(await dataSources.schedgeAPI.getSubjects()).length;
+    },
+    allSchools: async (_, __, { dataSources }) => {
+      const subjects = await dataSources.schedgeAPI.getSubjects();
+      const schools = await dataSources.schedgeAPI.getSchools();
+
+      return Object.keys(subjects).reduce((acc, school) => {
+        return [...acc, {
+          code: school,
+          name: schools[school]?.name === "" ? null : schools[school]?.name ?? null,
+          subjects: Object.keys(subjects[school]).reduce((a, code) => {
+            return [...a, {
+              name: subjects[school][code].name,
+              code: code,
+              school: {
+                code: school,
+                name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
+              }
+            }]
+          }, [])
+        }]
+      }, []);
     }
   },
+
 };
 
 // Create a new instance of the server

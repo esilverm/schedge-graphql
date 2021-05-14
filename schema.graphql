@@ -20,7 +20,7 @@ type Subject {
 
 type School {
   code: ID!
-  name: String!
+  name: String
   subjects: [Subject!]
 }
 
@@ -52,4 +52,6 @@ type Meeting {
 type Query {
   totalSubjects: Int!
   allSubjects: [Subject!]!
+  totalSchools: Int!
+  allSchools: [School!]!
 }
