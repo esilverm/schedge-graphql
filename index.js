@@ -1,5 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
-const { GraphQLScalarType, Kind } = require('graphql');
+const { ApolloServer } = require('apollo-server');
 const { GraphQLDateTime } = require('graphql-custom-types')
 const fs = require("fs");
 
