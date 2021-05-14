@@ -18,63 +18,22 @@ const resolvers = {
     },
     allSubjects: async (_, __, { dataSources }) => {
       const subjects = await dataSources.schedgeAPI.getSubjects();
-      const schools = await dataSources.schedgeAPI.getSchools();
 
       return Object.keys(subjects).reduce((acc, school) => {
         return [...acc, ...Object.keys(subjects[school]).reduce((a, code) => {
           return [...a, {
             name: subjects[school][code].name,
             code: code,
-            school: {
-              code: school,
-              name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
-            }
           }]
         }, [])]
       }, []);
     },
-    Subject: async(_, { year, semester, school, subject }, { dataSources }) => {
-      const subjectCourses = await (year || year === 0 ? 
-        dataSources.schedgeAPI.getCourseData(year, semester, school, subject) : 
-        dataSources.schedgeAPI.getCurrentCourseData(semester, school, subject));
+    Subject: async(_, { school, subject }, { dataSources }) => {
       const subjects = await dataSources.schedgeAPI.getSubjects();
-      const schools = await dataSources.schedgeAPI.getSchools();
       
       return {
         code: subject,
         name: subjects[school][subject].name,
-        school: {
-          code: school,
-          name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
-        },
-        courses: subjectCourses.map(({ deptCourseId, name, description, subjectCode, sections }) => ({
-          deptCourseId,
-          name,
-          description,
-          subject: {
-            code: subjectCode.code,
-            name: subjects[school][subjectCode.code].name,
-            school: {
-              code: school,
-              name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
-            }
-          },
-          sections: sections.map(({ instructors, status, recitations, ...section }) => ({
-            instructors: instructors.map((instructor) => ({
-              name: instructor,
-            })),
-            status: status.toUpperCase(),
-            recitations: recitations?.map(({ instructors, status, ...recitation }) => ({
-              instructors: instructors.map((instructor) => ({
-                name: instructor,
-              })),
-              status: status.toUpperCase(),
-              ...recitation
-            })),
-            ...section,
-          }))
-
-        }))
       }
     },
     totalSchools: async (_, __, { dataSources }) => {
@@ -88,23 +47,65 @@ const resolvers = {
       return Object.keys(subjects).reduce((acc, school) => {
         return [...acc, {
           code: school,
-          name: schools[school]?.name === "" ? null : schools[school]?.name ?? null,
-          subjects: Object.keys(subjects[school]).reduce((a, code) => {
-            return [...a, {
-              name: subjects[school][code].name,
-              code: code,
-              school: {
-                code: school,
-                name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
-              }
-            }]
-          }, [])
+          name: schools[school]?.name === "" ? null : schools[school]?.name ?? null
         }]
       }, []);
     },
-
   },
+  Subject: {
+    school: async (parent, _, { dataSources }) => {
+      const schools = await dataSources.schedgeAPI.getSchools();
+      const subjects = await dataSources.schedgeAPI.getSubjects();
 
+      // find school that contains code
+      const schoolCode = Object.keys(subjects).find((school) => parent.code in subjects[school])
+      
+      return {
+        code: schoolCode,
+        name: schools[schoolCode]?.name === "" ? null : schools[schoolCode]?.name ?? null
+      }
+    },
+    courses: async (parent, { year, semester }, { dataSources }) => {
+      const subjects = await dataSources.schedgeAPI.getSubjects();
+      const schoolCode = Object.keys(subjects).find((school) => parent.code in subjects[school])
+
+      const subjectCourses = await (year || year === 0 ? 
+        dataSources.schedgeAPI.getCourseData(year, semester, schoolCode, parent.code) : 
+        dataSources.schedgeAPI.getCurrentCourseData(semester, schoolCode, parent.code));
+
+      return subjectCourses.map(({ subjectCode, sections, ...courses }) => ({
+
+        sections: sections.map(({ instructors, status, recitations, ...section }) => ({
+          instructors: instructors.map((instructor) => ({
+            name: instructor,
+          })),
+          status: status.toUpperCase(),
+          recitations: recitations?.map(({ instructors, status, ...recitation }) => ({
+            instructors: instructors.map((instructor) => ({
+              name: instructor,
+            })),
+            status: status.toUpperCase(),
+            ...recitation
+          })),
+          ...section,
+        })),
+        subject: {
+          code: subjectCode.code,
+          name: subjects[schoolCode][subjectCode.code].name,
+        },
+        ...courses
+      }))
+    },
+  },
+  School: {
+    subjects: async (parent, _, { dataSources }) => {
+      const subjects = await dataSources.schedgeAPI.getSubjects();
+      return Object.keys(subjects[parent.code]).reduce((acc, subject) => [...acc, {
+        code: subject,
+        name: subjects[parent.code][subject].name,
+      }], [])
+    }
+  }
 };
 
 // Create a new instance of the server
