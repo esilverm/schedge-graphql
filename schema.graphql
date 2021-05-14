@@ -1,3 +1,5 @@
+scalar DateTime
+
 enum SemesterCode {
   SU
   SP
@@ -15,7 +17,7 @@ type Subject {
   code: ID!
   name: String!
   school: School
-  courses: [Course!]
+  courses: [Course!]!
 }
 
 type School {
@@ -29,14 +31,26 @@ type Course {
   name: String!
   description: String
   subject: Subject!
+  sections: [Section!]!
 }
 
 type Section {
   code: ID!
   registrationNumber: Int!
+  name: String
   status: CourseStatus!
-  type: String
-  meetings: [Meeting!]!
+  type: String!
+  instructors: [Professor!]!
+  meetings: [Meeting!]
+  recitations: [Section!]
+  waitlistTotal: Int
+  instructionMode: String
+  minUnits: Int
+  maxUnits: Int
+  grading: String
+  location: String
+  notes: String
+  prerequisites: String
 }
 
 type Professor {
@@ -44,14 +58,15 @@ type Professor {
 }
 
 type Meeting {
-  beginDate: String!
+  beginDate: DateTime!
   minutesDuration: Int!
-  endDate: String!
+  endDate: DateTime!
 }
 
 type Query {
   totalSubjects: Int!
   allSubjects: [Subject!]!
+  Subject(year: Int semester: SemesterCode! school: String! subject: String!): Subject
   totalSchools: Int!
   allSchools: [School!]!
 }

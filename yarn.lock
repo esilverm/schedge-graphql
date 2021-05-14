@@ -1078,6 +1078,11 @@ graceful-fs@^4.1.2:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
 
+graphql-custom-types@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/graphql-custom-types/-/graphql-custom-types-1.6.0.tgz#3f96c43f46a4d5371d006b6ac138450e99920da5"
+  integrity sha512-ZHbin5Y0Z9ziL8ITx/g+ycb4xbgfH2aXN63iuBGYSQvw1L4TwRgXZOFNDiO7xGDr70sS7EaNSN03Duwzy1dAUQ==
+
 graphql-extensions@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/graphql-extensions/-/graphql-extensions-0.14.0.tgz#cddf2fd43168e18be1d0e9057a4b3647febdd35f"

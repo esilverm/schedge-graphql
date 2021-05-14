@@ -13,6 +13,16 @@ class SchedgeAPI extends RESTDataSource {
   async getSchools() {
     return this.get(`schools`);
   }
+
+  async getCourseData(year, semester, school, subject) {
+    // get course data from any year
+    return this.get(`${year}/${semester}/${school}/${subject}?full=true`);
+  }
+
+  async getCurrentCourseData(semester, school, subject) {
+    // get course data from most recent year
+    return this.get(`current/${semester}/${school}/${subject}?full=true`);
+  }
 }
 
 module.exports = SchedgeAPI;
